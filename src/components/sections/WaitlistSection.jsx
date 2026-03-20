@@ -34,8 +34,11 @@ export default function WaitlistSection() {
   return (
     <section className="waitlist">
       <div ref={ref} className={`waitlist-inner${visible ? ' visible' : ''}`}>
-        <h2>Get early access.</h2>
-        <p>Join 15K+ people shaping the future of personal style.</p>
+        <h2 className="waitlist-title" aria-label="Get early access.">
+          <span className="waitlist-line waitlist-line-main">Get early</span>
+          <span className="waitlist-line waitlist-line-accent">access.</span>
+        </h2>
+        <p className="waitlist-copy">Join 15K+ people shaping the future of personal style.</p>
 
         <button
           className="waitlist-btn"

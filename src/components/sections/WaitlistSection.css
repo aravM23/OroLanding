@@ -4,68 +4,196 @@
   color: var(--gold);
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
   overflow: hidden;
 }
 
 .waitlist-inner {
-  text-align: center;
-  padding: 0 2rem;
+  position: relative;
+  min-height: 100vh;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: clamp(3.5rem, 8vw, 7rem) clamp(1.5rem, 7vw, 6rem);
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(1rem, 2vw, 1.9rem);
 }
 
-.waitlist-inner h2 {
-  font-size: 3.4rem;
+.waitlist-inner::before {
+  content: '';
+  position: absolute;
+  top: clamp(2.2rem, 7vw, 5rem);
+  left: clamp(1.5rem, 7vw, 6rem);
+  width: clamp(46px, 10vw, 120px);
+  height: 2px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.waitlist-title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 0.9;
+  text-align: left;
+}
+
+.waitlist-line {
+  opacity: 0;
+  transform: translateY(44px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.waitlist-line-main {
+  font-family: "Arial Black", "Avenir Next Condensed", "Impact", sans-serif;
+  font-size: clamp(2.5rem, 8.4vw, 6.6rem);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.waitlist-line-accent {
+  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: clamp(2.9rem, 9.8vw, 7.6rem);
+  font-style: italic;
   font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.75rem;
-  opacity: 0;
-  transform: translateY(50px);
-  transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  letter-spacing: -0.035em;
+  margin-left: clamp(0.2rem, 6.5vw, 5rem);
+  transform: translateY(44px) translateX(-0.5rem);
 }
 
-.waitlist-inner.visible h2 {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.waitlist-inner p {
-  font-size: 1.05rem;
+.waitlist-copy {
+  margin: 0;
+  max-width: 44ch;
   color: var(--gold);
-  margin-bottom: 2.5rem;
+  font-family: "Avenir Next", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: clamp(1rem, 1.8vw, 1.28rem);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
   opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0.15s;
+  transform: translateY(34px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
 }
 
-.waitlist-inner.visible p {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.waitlist-btn {
-  padding: 0.9rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-
-  background: transparent;
-  color: var(--gold);
-  border: solid 1px var(--gold);
-  border-radius: 14px;
-  cursor: pointer;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: 0.1s;
-}
-
+.waitlist-inner.visible .waitlist-line,
+.waitlist-inner.visible .waitlist-copy,
 .waitlist-inner.visible .waitlist-btn {
   opacity: 1;
   transform: translateY(0);
 }
 
-.waitlist-btn:hover {
-  opacity: 0.9;
-  scale: 1.02;
+.waitlist-inner.visible .waitlist-line-accent {
+  transform: translateY(0) translateX(0.7rem);
+}
+
+.waitlist-btn {
+  position: relative;
+  margin-top: 0.7rem;
+  padding: 0.95rem 1.6rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  background: transparent;
+  color: var(--gold);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s, background-color 0.25s ease;
+}
+
+.waitlist-btn::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(255, 154, 0, 0.45);
+  border-radius: 999px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.waitlist-inner.visible .waitlist-btn::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.waitlist-inner.visible .waitlist-btn:hover {
+  background: rgba(255, 154, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.waitlist-inner.visible .waitlist-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .waitlist-inner {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .waitlist-inner::before {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .waitlist-title {
+    text-align: center;
+    align-items: center;
+  }
+
+  .waitlist-line-accent {
+    margin-left: 0;
+    transform: translateY(44px);
+  }
+
+  .waitlist-copy {
+    max-width: 34ch;
+  }
+
+  .waitlist-inner.visible .waitlist-line-accent {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .waitlist-inner {
+    min-height: 80vh;
+    padding: 3rem 1.25rem 3.5rem;
+    gap: 1.1rem;
+  }
+
+  .waitlist-line-main {
+    font-size: clamp(2rem, 10.5vw, 3.2rem);
+    letter-spacing: -0.01em;
+  }
+
+  .waitlist-line-accent {
+    font-size: clamp(2.3rem, 12vw, 3.8rem);
+  }
+
+  .waitlist-copy {
+    font-size: 0.96rem;
+    line-height: 1.45;
+  }
+
+  .waitlist-btn {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .waitlist-line,
+  .waitlist-copy,
+  .waitlist-btn,
+  .waitlist-btn::before {
+    transition: none;
+  }
 }
