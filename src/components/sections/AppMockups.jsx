@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import useScrollReveal from '../../lib/useScrollReveal'
+import useParallax from '../../lib/useParallax'
 import './AppMockups.css'
 
 const screens = [
@@ -45,6 +46,8 @@ export default function AppMockups() {
   const startX = useRef(0)
   const ref = useRef(null)
   const visible = useScrollReveal(ref, { threshold: 0.18 })
+  const { ref: phoneParaRef, offset: phoneOffset } = useParallax(0.08)
+  const { ref: contentParaRef, offset: contentOffset } = useParallax(0.14)
   
   const go = useCallback((i) => {
     setActive(i < 0 ? screens.length - 1 : i >= screens.length ? 0 : i)
@@ -81,7 +84,7 @@ export default function AppMockups() {
       
       <div className="mockup-container-side">
         {/* Phone Left */}
-        <div className="phone-center">
+        <div ref={phoneParaRef} className="phone-center" style={{ transform: `translateY(${phoneOffset}px)` }}>
           <p className="mockup-label">The App</p>
           
           <div className="phone-wrap">
@@ -123,7 +126,7 @@ export default function AppMockups() {
         </div>
 
         {/* Content Right */}
-        <div className="content-side">
+        <div ref={contentParaRef} className="content-side" style={{ transform: `translateY(${contentOffset}px)` }}>
           <h3 className="content-title">{currentContent.title}</h3>
           <p className="content-desc">{currentContent.desc}</p>
         </div>

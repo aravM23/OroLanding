@@ -9,8 +9,7 @@
   position: relative;
 }
 
-.waitlist::before {
-  content: '';
+.waitlist-bg-glow {
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at 70% 50%, rgba(74, 66, 117, 0.4) 0%, transparent 70%);

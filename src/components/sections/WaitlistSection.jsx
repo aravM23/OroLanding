@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import useScrollReveal from '../../lib/useScrollReveal'
+import useParallax from '../../lib/useParallax'
 import WaitlistModal from './WaitlistModal'
 import './WaitlistSection.css'
 
@@ -7,9 +8,9 @@ export default function WaitlistSection() {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const visible = useScrollReveal(ref, { threshold: 0.25 })
+  const { ref: paraRef, offset } = useParallax(0.1)
 
   useEffect(() => {
-    // Auto-open modal if returning from OAuth
     if (window.location.hash.includes('access_token')) {
       setOpen(true);
     }
@@ -17,7 +18,12 @@ export default function WaitlistSection() {
 
   return (
     <section ref={ref} className="waitlist">
-      <div className={`waitlist-inner${visible ? ' visible' : ''}`}>
+      <div className="waitlist-bg-glow" />
+      <div 
+        ref={paraRef}
+        className={`waitlist-inner${visible ? ' visible' : ''}`}
+        style={{ transform: `translateY(${offset}px)` }}
+      >
         <h2 className="waitlist-title" aria-label="Get early access.">
           <span className="waitlist-line waitlist-line-main">Get early</span>
           <span className="waitlist-line waitlist-line-accent">access.</span>

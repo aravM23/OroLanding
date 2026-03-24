@@ -8,8 +8,7 @@
   position: relative;
 }
 
-.about::before {
-  content: '';
+.about-bg-glow {
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at 30% 50%, rgba(74, 66, 117, 0.5) 0%, transparent 70%);
