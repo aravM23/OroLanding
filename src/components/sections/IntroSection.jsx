@@ -41,6 +41,7 @@ export default function IntroSection() {
           }}
         >
           <img src="/static/oro-logo.png" alt="Oro" className="hero-nav-logo" />
+<<<<<<< HEAD
           <div className="hero-nav-icons">
             <a href="mailto:admin@buildingoro.ca" className="hero-nav-icon" aria-label="Email">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -65,6 +66,8 @@ export default function IntroSection() {
               </svg>
             </a>
           </div>
+=======
+>>>>>>> d346d35 (Remove Get early access button from nav)
         </nav>
 
         {/* Headline */}
