@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/terms",   "destination": "/Oro_Terms_of_Service.html" },
+    { "source": "/privacy", "destination": "/Oro_Privacy_Policy.html" },
+    { "source": "/cookies", "destination": "/Oro_Cookie_Policy.html" },
+    { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
+  ]
+}

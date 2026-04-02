@@ -231,12 +231,46 @@
   color: rgba(245, 240, 232, 0.8);
 }
 
-/* ── Fine print ── */
-.modal-fine {
-  margin-top: 1.25rem;
-  font-size: 0.68rem;
-  color: rgba(245, 240, 232, 0.2);
-  letter-spacing: 0.02em;
+/* ── CASL Consent ── */
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.consent-checkbox {
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.consent-label {
+  font-size: 0.7rem;
+  color: rgba(245, 240, 232, 0.38);
+  line-height: 1.55;
+  cursor: pointer;
+}
+
+.consent-label a {
+  color: rgba(212, 168, 83, 0.65);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s ease;
+}
+
+.consent-label a:hover {
+  color: rgba(212, 168, 83, 1);
+}
+
+.consent-error {
+  margin-top: 0.45rem;
+  font-size: 0.78rem;
+  color: #e07070;
+  letter-spacing: 0.01em;
 }
 
 @media (max-width: 480px) {

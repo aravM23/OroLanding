@@ -9,6 +9,8 @@ const supabase = createClient(
 
 export default function WaitlistModal({ onClose }) {
   const [email, setEmail] = useState('')
+  const [consent, setConsent] = useState(false)
+  const [consentError, setConsentError] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [alreadyOnList, setAlreadyOnList] = useState(false)
@@ -19,12 +21,22 @@ export default function WaitlistModal({ onClose }) {
     const cleanEmail = email.trim().toLowerCase()
     if (!cleanEmail) return
 
+    if (!consent) {
+      setConsentError(true)
+      return
+    }
+
     setLoading(true)
     setError(null)
 
+    // CASL compliance: record consent flag and the exact timestamp consent was given.
+    // Requires the `waitlist` table to have `consent` (boolean) and
+    // `consent_timestamp` (timestamptz) columns.
+    const consentTimestamp = new Date().toISOString()
+
     const { error: dbError } = await supabase
       .from('waitlist')
-      .insert([{ email: cleanEmail }])
+      .insert([{ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }])
 
     if (dbError) {
       if (dbError.code === '23505') {
@@ -41,7 +53,7 @@ export default function WaitlistModal({ onClose }) {
       await fetch(import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail }),
+        body: JSON.stringify({ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }),
       })
     } catch (err) {
       console.error('Sheets error:', err)
@@ -86,29 +98,51 @@ export default function WaitlistModal({ onClose }) {
             <h3>Join the waitlist</h3>
             <p className="modal-subtitle">Be first to know when we launch.</p>
 
-            <form onSubmit={handleSubmit} className="email-form">
-              <input
-                type="email"
-                className="email-input"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoFocus
-              />
-              <button type="submit" className="email-submit-btn" disabled={loading} aria-label="Join waitlist">
-                {loading ? (
-                  <span className="btn-spinner" />
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                )}
-              </button>
-            </form>
+            <form onSubmit={handleSubmit}>
+              <div className="email-form">
+                <input
+                  type="email"
+                  className="email-input"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+                <button type="submit" className="email-submit-btn" disabled={loading} aria-label="Join waitlist">
+                  {loading ? (
+                    <span className="btn-spinner" />
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </button>
+              </div>
 
-            {error && <p className="modal-error">{error}</p>}
-            <p className="modal-fine">No spam. Unsubscribe anytime.</p>
+              <div className="consent-row">
+                <input
+                  type="checkbox"
+                  id="consent-checkbox"
+                  className="consent-checkbox"
+                  checked={consent}
+                  onChange={(e) => {
+                    setConsent(e.target.checked)
+                    if (e.target.checked) setConsentError(false)
+                  }}
+                />
+                <label htmlFor="consent-checkbox" className="consent-label">
+                  I agree to receive updates and news from Oro. You can unsubscribe at any time.{' '}
+                  View our{' '}
+                  <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                </label>
+              </div>
+              {consentError && (
+                <p className="consent-error">Please confirm you agree to receive emails from us.</p>
+              )}
+
+              {error && <p className="modal-error">{error}</p>}
+            </form>
           </>
         )}
       </div>
