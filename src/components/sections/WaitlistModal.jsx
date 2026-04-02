@@ -1,6 +1,7 @@
 import './WaitlistModal.css';
 import { useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { trackEvent } from '../../lib/analytics';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -36,7 +37,7 @@ export default function WaitlistModal({ onClose }) {
 
     const { error: dbError } = await supabase
       .from('waitlist')
-      .insert([{ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }])
+      .insert([{ email: cleanEmail, consent: true, consent_email_marketing: true, consent_timestamp: consentTimestamp }])
 
     if (dbError) {
       if (dbError.code === '23505') {
@@ -53,12 +54,13 @@ export default function WaitlistModal({ onClose }) {
       await fetch(import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }),
+        body: JSON.stringify({ email: cleanEmail, consent: true, consent_email_marketing: true, consent_timestamp: consentTimestamp }),
       })
     } catch (err) {
       console.error('Sheets error:', err)
     }
 
+    trackEvent('waitlist_signup', { method: 'email' })
     setSuccess(true)
     setLoading(false)
   }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import WaitlistModal from './WaitlistModal'
+import { trackEvent } from '../../lib/analytics'
 import './IntroSection.css'
 
 export default function IntroSection() {
@@ -102,7 +103,7 @@ export default function IntroSection() {
           >
             <button
               className="hero-waitlist-btn"
-              onClick={() => setOpen(true)}
+              onClick={() => { trackEvent('cta_click', { location: 'hero' }); setOpen(true); }}
             >
               Join the Waitlist
             </button>
