@@ -8,7 +8,10 @@ export default function IntroSection() {
   const heroRef = useRef(null)
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setLoaded(true))
+    // Double RAF ensures initial paint happens before transition starts
+    const id = requestAnimationFrame(() =>
+      requestAnimationFrame(() => setLoaded(true))
+    )
     return () => cancelAnimationFrame(id)
   }, [])
 
@@ -33,30 +36,32 @@ export default function IntroSection() {
           className="hero-nav"
           style={{
             opacity: loaded ? 1 : 0,
-            transform: loaded ? 'translateY(0)' : 'translateY(-12px)',
-            transition: 'opacity 0.9s ease-out 0.1s, transform 0.9s ease-out 0.1s',
+            transform: loaded ? 'translateY(0)' : 'translateY(-16px)',
+            transition: 'opacity 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s, transform 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s',
           }}
         >
           <img src="/static/oro-logo.png" alt="Oro" className="hero-nav-logo" />
           <div className="hero-nav-icons">
             <a href="mailto:admin@buildingoro.ca" className="hero-nav-icon" aria-label="Email">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <path d="M2 7l10 7 10-7"/>
               </svg>
             </a>
             <a href="https://www.instagram.com/oro.wardrobe/" target="_blank" rel="noopener noreferrer" className="hero-nav-icon" aria-label="Instagram">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" />
-                <circle cx="12" cy="12" r="5" />
-                <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5"/>
+                <circle cx="12" cy="12" r="4.5"/>
+                <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
               </svg>
             </a>
-            <a href="https://www.linkedin.com/company/buildingoro/" target="_blank" rel="noopener noreferrer" className="hero-nav-icon" aria-label="LinkedIn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z" />
-                <rect x="2" y="9" width="4" height="12" />
-                <circle cx="4" cy="4" r="2" />
+            <a href="https://www.linkedin.com/company/buildingoro/?viewAsMember=true" target="_blank" rel="noopener noreferrer" className="hero-nav-icon" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="3"/>
+                <path d="M7 10v7"/>
+                <path d="M7 7v.01"/>
+                <path d="M11 17v-4c0-1.1.9-2 2-2s2 .9 2 2v4"/>
+                <path d="M11 10v7"/>
               </svg>
             </a>
           </div>
@@ -68,19 +73,19 @@ export default function IntroSection() {
             className="hero-headline"
             style={{
               opacity: loaded ? 1 : 0,
-              transform: loaded ? 'translateY(0)' : 'translateY(30px)',
-              transition: 'opacity 1s ease-out 0.2s, transform 1s ease-out 0.2s',
+              transform: loaded ? 'translateY(0)' : 'translateY(40px)',
+              transition: 'opacity 1s cubic-bezier(0.22,1,0.36,1) 0.35s, transform 1.1s cubic-bezier(0.22,1,0.36,1) 0.35s',
             }}
           >
-            Creates outfits from <span className="hero-headline-accent">your style</span> with your clothes.
+            Create outfits from <span className="hero-headline-accent">your style</span> with your clothes.
           </h1>
 
           <p
             className="hero-subtitle"
             style={{
               opacity: loaded ? 1 : 0,
-              transform: loaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 1s ease-out 0.45s, transform 1s ease-out 0.45s',
+              transform: loaded ? 'translateY(0)' : 'translateY(24px)',
+              transition: 'opacity 1s cubic-bezier(0.22,1,0.36,1) 0.6s, transform 1.1s cubic-bezier(0.22,1,0.36,1) 0.6s',
             }}
           >
             Style is subjective. Getting dressed shouldn't be hard. Using your own clothes and your own taste, we make it easy.
@@ -92,7 +97,7 @@ export default function IntroSection() {
             style={{
               opacity: loaded ? 1 : 0,
               transform: loaded ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 1s ease-out 0.6s, transform 1s ease-out 0.6s',
+              transition: 'opacity 1s cubic-bezier(0.22,1,0.36,1) 0.82s, transform 1.1s cubic-bezier(0.22,1,0.36,1) 0.82s',
             }}
           >
             <button
@@ -104,17 +109,6 @@ export default function IntroSection() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div
-          className="hero-scroll"
-          style={{
-            opacity: loaded ? 0.35 : 0,
-            transition: 'opacity 1s ease-out 0.9s',
-          }}
-        >
-          <span className="hero-scroll-label">Scroll</span>
-          <div className="hero-scroll-line" />
-        </div>
       </section>
 
       {open && <WaitlistModal onClose={() => setOpen(false)} />}
