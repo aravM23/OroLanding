@@ -1,29 +1,12 @@
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
-
-let initialized = false;
+const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 export function initAnalytics() {
-  if (initialized) return;
-  if (typeof window === 'undefined') return;
-
-  const script = document.createElement('script');
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-  script.async = true;
-  document.head.appendChild(script);
-
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function () {
-    window.dataLayer.push(arguments);
-  };
-  window.gtag('js', new Date());
-  window.gtag('config', GA_MEASUREMENT_ID, { anonymize_ip: true });
-
-  initialized = true;
+  if (!GA_ID || !window.gtag) return;
+  window.gtag('config', GA_ID, { anonymize_ip: true });
 }
 
 export function trackEvent(eventName, params = {}) {
-  if (!initialized) return;
-  if (typeof window === 'undefined' || !window.gtag) return;
+  if (!window.gtag || !hasAnalyticsConsent()) return;
   window.gtag('event', eventName, params);
 }
 

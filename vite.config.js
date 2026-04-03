@@ -10,9 +10,9 @@ const legalPagePlugin = {
   configureServer(server) {
     server.middlewares.use((req, _res, next) => {
       const map = {
-        '/terms':   '/Oro_Terms_of_Service.html',
-        '/privacy': '/Oro_Privacy_Policy.html',
-        '/cookies': '/Oro_Cookie_Policy.html',
+        '/terms':   '/terms.html',
+        '/privacy': '/privacy.html',
+        '/cookies': '/cookies.html',
       }
       if (map[req.url]) req.url = map[req.url]
       next()

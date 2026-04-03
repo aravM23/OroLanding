@@ -2,9 +2,9 @@
   "buildCommand": "npx vite build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/terms",   "destination": "/Oro_Terms_of_Service.html" },
-    { "source": "/privacy", "destination": "/Oro_Privacy_Policy.html" },
-    { "source": "/cookies", "destination": "/Oro_Cookie_Policy.html" },
+    { "source": "/terms",   "destination": "/terms.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/cookies", "destination": "/cookies.html" },
     { "source": "/((?!.*\\.).*)", "destination": "/index.html" }
   ]
 }
