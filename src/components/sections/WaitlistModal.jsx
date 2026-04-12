@@ -1,12 +1,6 @@
 import './WaitlistModal.css';
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { trackEvent } from '../../lib/analytics';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 export default function WaitlistModal({ onClose }) {
   const [email, setEmail] = useState('')
@@ -30,39 +24,36 @@ export default function WaitlistModal({ onClose }) {
     setLoading(true)
     setError(null)
 
-    // CASL compliance: record consent flag and the exact timestamp consent was given.
-    // Requires the `waitlist` table to have `consent` (boolean) and
-    // `consent_timestamp` (timestamptz) columns.
-    const consentTimestamp = new Date().toISOString()
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cleanEmail,
+          consent: true,
+          consent_timestamp: new Date().toISOString(),
+        }),
+      })
 
-    const { error: dbError } = await supabase
-      .from('waitlist')
-      .insert([{ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }])
-
-    if (dbError) {
-      if (dbError.code === '23505') {
+      if (res.status === 409) {
         setAlreadyOnList(true)
         setLoading(false)
         return
       }
+
+      if (!res.ok) {
+        setError('Something went wrong. Try again.')
+        setLoading(false)
+        return
+      }
+
+      trackEvent('waitlist_signup', { method: 'email' })
+      setSuccess(true)
+    } catch {
       setError('Something went wrong. Try again.')
+    } finally {
       setLoading(false)
-      return
     }
-
-    try {
-      await fetch(import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, consent: true, consent_email_marketing: true, consent_timestamp: consentTimestamp }),
-      })
-    } catch (err) {
-      console.error('Sheets error:', err)
-    }
-
-    trackEvent('waitlist_signup', { method: 'email' })
-    setSuccess(true)
-    setLoading(false)
   }
 
   return (
