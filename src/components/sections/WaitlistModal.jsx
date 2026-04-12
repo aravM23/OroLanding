@@ -37,7 +37,7 @@ export default function WaitlistModal({ onClose }) {
 
     const { error: dbError } = await supabase
       .from('waitlist')
-      .insert([{ email: cleanEmail, consent: true, consent_email_marketing: true, consent_timestamp: consentTimestamp }])
+      .insert([{ email: cleanEmail, consent: true, consent_timestamp: consentTimestamp }])
 
     if (dbError) {
       if (dbError.code === '23505') {
