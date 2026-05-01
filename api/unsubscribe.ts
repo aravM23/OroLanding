@@ -24,8 +24,14 @@ function confirmHtml(token: string): string {
   <title>Unsubscribe — Oro Insiders</title>
   <style>
     ${SHARED_STYLES}
-    .btn { display: inline-block; margin-top: 8px; padding: 10px 24px; background: #1a1a1a; color: #fff; font-family: -apple-system, sans-serif; font-size: 15px; border: none; cursor: pointer; border-radius: 4px; text-decoration: none; }
+    .btn { display: inline-block; margin-top: 24px; padding: 10px 24px; background: #1a1a1a; color: #fff; font-family: -apple-system, sans-serif; font-size: 15px; border: none; cursor: pointer; border-radius: 4px; text-decoration: none; }
     .btn:hover { background: #333; }
+    .reasons { margin-top: 24px; }
+    .reasons p { font-size: 14px; color: #8a8a8a; margin-bottom: 10px; font-family: -apple-system, sans-serif; }
+    .reason-option { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; font-family: -apple-system, sans-serif; font-size: 15px; color: #1a1a1a; }
+    .reason-option input[type="radio"] { accent-color: #1a1a1a; width: 16px; height: 16px; cursor: pointer; }
+    .other-input { margin-top: 8px; width: 100%; box-sizing: border-box; padding: 8px 12px; font-size: 15px; font-family: -apple-system, sans-serif; border: 1px solid #d4d4d4; border-radius: 4px; color: #1a1a1a; outline: none; display: none; }
+    .other-input:focus { border-color: #1a1a1a; }
   </style>
 </head>
 <body>
@@ -34,8 +40,29 @@ function confirmHtml(token: string): string {
   <p>You'll stop receiving all future issues. If this was an accidental click, just close this page — you're still subscribed.</p>
   <form method="POST" action="/api/unsubscribe?token=${encodeURIComponent(token)}">
     <input type="hidden" name="confirm" value="1">
+    <div class="reasons">
+      <p>Mind telling us why? (optional)</p>
+      <label class="reason-option"><input type="radio" name="reason" value="not_what_i_expected"> The content isn't what I expected</label>
+      <label class="reason-option"><input type="radio" name="reason" value="too_frequent"> Too many emails</label>
+      <label class="reason-option"><input type="radio" name="reason" value="too_long"> Emails are too long</label>
+      <label class="reason-option"><input type="radio" name="reason" value="wrong_format"> I prefer a different format (video, social, etc.)</label>
+      <label class="reason-option"><input type="radio" name="reason" value="not_for_me"> I'm not sure Oro is for me anymore</label>
+      <label class="reason-option"><input type="radio" name="reason" value="lost_interest"> I signed up out of curiosity but lost interest</label>
+      <label class="reason-option"><input type="radio" name="reason" value="other" id="reason-other-radio"> Other</label>
+      <input type="text" name="reason_other" id="reason-other-input" class="other-input" placeholder="Tell us more…" maxlength="280">
+    </div>
     <button type="submit" class="btn">Yes, unsubscribe me</button>
   </form>
+  <script>
+    document.getElementById('reason-other-radio').addEventListener('change', function() {
+      document.getElementById('reason-other-input').style.display = 'block';
+    });
+    document.querySelectorAll('input[name="reason"]').forEach(function(r) {
+      if (r.id !== 'reason-other-radio') r.addEventListener('change', function() {
+        document.getElementById('reason-other-input').style.display = 'none';
+      });
+    });
+  </script>
 </body>
 </html>`;
 }
@@ -102,9 +129,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   );
 
   const source = isOneClick ? 'one_click' : 'confirmed_link';
+  const reason = isOneClick ? null : (
+    req.body?.reason === 'other'
+      ? (req.body?.reason_other?.trim().slice(0, 280) || 'other')
+      : (req.body?.reason ?? null)
+  );
   const { error } = await supabase
     .from('waitlist')
-    .update({ unsubscribed_at: new Date().toISOString(), unsubscribe_source: source })
+    .update({ unsubscribed_at: new Date().toISOString(), unsubscribe_source: source, unsubscribe_reason: reason })
     .eq('email', verified.email)
     .is('unsubscribed_at', null);
 
